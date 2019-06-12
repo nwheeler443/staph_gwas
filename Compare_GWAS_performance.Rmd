@@ -1,0 +1,98 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# collate info on mechanisms
+Antibiotic <- c("Gentamicin", "Penicillin", "Oxacillin", "FusidicAcid", "Teicoplanin", "Vancomycin", "Erythromycin", "Clindamycin", "Daptomycin", "Mupirocin", "Linezolid", "Ciprofloxacin", "Rifampicin", "Minocycline", "Tetracycline", "Trimethoprim")
+
+Known.SNPs <- c(0,0,0,68,0,0,0,1,0,16,15,27,19,0,0,6)
+Present.SNPs <- c(0,0,0,18,0,0,0,0,0,4,1,17,15,0,0,5)
+
+Gentamicin_snps <- c()
+Penicillin_snps <- c()
+Oxacillin_snps <- c()
+FusidicAcid_snps <-  c("chrEMRSA15:562405:G:A", "chrEMRSA15:562556:G:A", "chrEMRSA15:562566:C:T", "chrEMRSA15:562625:G:A", "chrEMRSA15:562626:T:C", "chrEMRSA15:562710:C:T", "chrEMRSA15:563484:C:T", "chrEMRSA15:563568:C:T", "chrEMRSA15:563574:C:T", "chrEMRSA15:563687:G:A", "chrEMRSA15:563709:G:T", "chrEMRSA15:563716:G:A", "chrEMRSA15:563726:C:T", "chrEMRSA15:563738:T:A", "chrEMRSA15:563739:T:C", "chrEMRSA15:563728:C:G", "chrEMRSA15:563728:C:A", "chrEMRSA15:563723:C:T")
+Teicoplanin_snps <- c()
+Vancomycin_snps <- c()
+Erythromycin_snps <- c()
+Clindamycin_snps <- c()
+Daptomycin_snps <- c()
+Mupirocin_snps <- c("chrEMRSA15:1142184:G:T", "chrEMRSA15:1140880:C:T", "chrEMRSA15:1141982:C:A", "chrEMRSA15:1142055:G:T")
+Linezolid_snps <- c("chrEMRSA15:2576:G:T")
+Ciprofloxacin_snps <- c("chrEMRSA15:7255:T:C", "chrEMRSA15:1335028:T:C", "chrEMRSA15:7266:G:A", "chrEMRSA15:7254:T:G", "chrEMRSA15:1334924:T:G", "chrEMRSA15:1337188:G:A", "chrEMRSA15:1335030:T:C", "chrEMRSA15:1335039:G:A", "chrEMRSA15:1335040:A:T", "chrEMRSA15:1335040:A:G", "chrEMRSA15:1335112:G:")
+Rifampicin_snps <- c("chrEMRSA15:554875:T:C", "chrEMRSA15:554887:C:A", "chrEMRSA15:554888:A:T", "chrEMRSA15:554896:G:T", "chrEMRSA15:554897:A:G", "chrEMRSA15:554903:C:A", "chrEMRSA15:554914:G:A", "chrEMRSA15:554915:C:A", "chrEMRSA15:554915:C:T", "chrEMRSA15:554926:C:A", "chrEMRSA15:554926:C:T", "chrEMRSA15:554936:G:A", "chrEMRSA15:554942:C:T", "chrEMRSA15:555066:T:G")
+Minocycline_snps <- c()
+Tetracycline_snps <- c()
+Trimethoprim_snps <- c("chrEMRSA15:1424546:A:T", "chrEMRSA15:1424393:T:C", "chrEMRSA15:1424751:G:T", "chrEMRSA15:1424781:A:C", "chrEMRSA15:1424779:T:C")
+
+Known.genes <- c(1,2,1,3,2,2,10,5,0,1,1,0,0,1,4,3)
+Present.genes <- c(1,2,1,2,0,0,4,4,0,1,0,0,0,1,3,2)
+
+Gentamicin_genes <- c("aacA-ap")
+Penicillin_genes_alt <- c(c("blaZ", "group_1512", "group_1513", "group_1516", "group_1519", "group_1518", "group_1515", "group_1510", "blaZ_1", "group_1517", "blaZ_2"), c("mecA_1", "mecA_2"))
+Penicillin_genes <- c("group_1512", "mecA_1")
+Oxacillin_genes <- c("mecA_1")
+FusidicAcid_genes <- c("fusB", "group_9879")
+Teicoplanin_genes <- c()
+Vancomycin_genes <- c()
+Erythromycin_genes <- c("ermA", "ermC")
+Clindamycin_genes <- c("ermA")
+Daptomycin_genes <- c()
+Mupirocin_genes <- c("ileS_2")
+Linezolid_genes <- c()
+Ciprofloxacin_genes <- c()
+Rifampicin_genes <- c()
+Minocycline_genes <- c("tetM")
+Tetracycline_genes <- c("tetM", "tet")
+Trimethoprim_genes <- c("dfrA_2", "dfrG", "dfrK")
+
+```
+
+```{r}
+# read in results from GWAS methods
+
+# for (i in c("gen", "pen", "met", "fus", "tei", "van", "ery", "cli", "dap", "mup", "lin", "cip", "rif", "min", "tet", "tmp")) {
+#   pyseer <- read.delim(paste("~/Documents/staph_gwas/pyseer_topology/", toupper(i), "_gene.pyseer.phylo", sep=""), stringsAsFactors = F)
+#   plink <- read.table(paste("~/Documents/staph_gwas/plink/", i, "_gene_plink.cmh", sep=""), stringsAsFactors = F, header=T)
+#   pyseer$position <- paste(lapply(pyseer$variant, function (x) strsplit(x, "_")[[1]][2]))
+#   pyseer$snp <- plink[match(pyseer$position, plink$BP),2]
+#   write.csv(cbind.data.frame(Gene=pyseer$snp, P_value=pyseer$lrt.pvalue), file=paste("~/Documents/staph_gwas/github_methods_compare/", i, "_gene_pyseer.csv", sep=""), row.names=F)
+# }
+
+library(stringr)
+
+files <- list.files("gwas_output_files/", pattern=".csv")
+
+snp_files <- files[grep("snp", files)]
+gene_files <- files[grep("gene", files)]
+
+snp_results <- data.frame(Antibiotic=Antibiotic, Method="Known", Hits=Known.SNPs)
+snp_results <- rbind.data.frame(snp_results, cbind.data.frame(Antibiotic=Antibiotic, Method="Present", Hits=Present.SNPs))
+
+for(i in snp_files) {
+  results <- read.csv(paste("gwas_output_files/", i, sep=""))
+  snp_results <- rbind.data.frame(snp_results, cbind.data.frame(Antibiotic=str_split(i, "_")[[1]][1], Method=sub(".csv", "", str_split(i, "_")[[1]][3]), Hits=sum(p.adjust(results[match(get(paste(str_split(i, "_")[[1]][1], "_snps", sep="")), results[,1]),2], n=sum(!is.na(results[,2])))<0.05, na.rm=T)))
+}
+
+gene_results <- data.frame(Antibiotic=Antibiotic, Method="Known", Hits=Known.genes)
+gene_results <- rbind.data.frame(gene_results, cbind.data.frame(Antibiotic=Antibiotic, Method="Present", Hits=Present.genes))
+
+for(i in gene_files) {
+  results <- read.csv(paste("gwas_output_files/", i, sep=""), stringsAsFactors = F)
+  results[,1] <- paste(lapply(results[,1], function(x) strsplit(x, ":")[[1]][3]))
+  gene_results <- rbind.data.frame(gene_results, cbind.data.frame(Antibiotic=str_split(i, "_")[[1]][1], Method=sub(".csv", "", str_split(i, "_")[[1]][3]), Hits=sum(p.adjust(results[match(get(paste(sub(".csv", "", str_split(i, "_")[[1]][1]), "_genes", sep="")), results[,1]),2], n=sum(!is.na(results[,2])))<0.05, na.rm=T)))
+}
+
+mechanisms <- rbind.data.frame(cbind.data.frame(snp_results, Type="SNPs"), cbind.data.frame(gene_results, Type="Genes"))
+
+levels <- c("Gentamicin","Penicillin","Oxacillin","FusidicAcid","Teicoplanin","Vancomycin","Erythromycin","Clindamycin","Daptomycin","Mupirocin","Linezolid","Ciprofloxacin","Rifampicin","Minocycline","Tetracycline","Trimethoprim")
+
+library(ggplot2)
+ggplot(mechanisms, aes(x=factor(Antibiotic, levels=rev(levels)), fill=factor(Method), y=Hits)) + geom_bar(position="dodge", stat="identity", width=0.7) + coord_flip() + facet_grid(~Type, scales = "free") + theme_minimal() + ylab("Count") + xlab("Antibiotic")
+ggsave("GWAS_method_comaprison.png", width=8, height=6)
+ggsave("GWAS_method_comaprison.pdf", width=8, height=6)
+
+```
+
