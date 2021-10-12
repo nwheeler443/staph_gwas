@@ -91,8 +91,8 @@ levels <- c("Gentamicin","Penicillin","Oxacillin","FusidicAcid","Teicoplanin","V
 
 library(ggplot2)
 ggplot(mechanisms, aes(x=factor(Antibiotic, levels=rev(levels)), fill=factor(Method), y=Hits)) + geom_bar(position="dodge", stat="identity", width=0.7) + coord_flip() + facet_grid(~Type, scales = "free") + theme_minimal() + ylab("Count") + xlab("Antibiotic")
-ggsave("GWAS_method_comaprison.png", width=8, height=6)
-ggsave("GWAS_method_comaprison.pdf", width=8, height=6)
+ggsave("GWAS_method_comparison.png", width=8, height=6)
+ggsave("GWAS_method_comparison.pdf", width=8, height=6)
 
 ```
 
